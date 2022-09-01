@@ -1,0 +1,49 @@
+<?php
+
+
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\TableController;
+use App\Http\Controllers\Admin\StationController;
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+Route::get('/search', [StationController::class, 'search' ]);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+//Route::get('stations', [StationController::class, 'index']);
+
+Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function() {
+
+     Route::get('/', [AdminController::class, 'index'])->name('index');
+     Route::resource('/stations', StationController::class);
+     Route::resource('/menus', MenuController::class);
+     Route::resource('/tables', TableController::class);
+     Route::resource('/reservations', ReservationController::class);
+    
+
+});
+
+
+
+require __DIR__.'/auth.php';
